@@ -32,7 +32,7 @@ useState는 버튼 클릭과 동시에 실행되었고 useEffect는 한번 실�
 이게 바로 useEffect의 사용 이유와 핵심이라고 할 수 있겠습니다.
 <br><br>
 
-💡#6.3 :: UseEffects(2) <br>
+💡#6.2 :: UseEffects(2) <br>
 
 ```javascript
 function App() {
@@ -71,3 +71,51 @@ useEffect의 바로 저 [] 자리에 keyword를 넣으면 'keyword' 가 변화�
 ```
 
 [] 안에는 위처럼 2개 이상을 넣어줄 수도 있습니다 🧐
+
+
+💡#6.4 :: Recap, Cleanup <br>
+✅ Cleanup : 컴포넌트가 제거 (destroy) 되었을 때 이벤트를 실행시키는 함수
+
+```javascript
+import { useState, useEffect } from "react";
+
+function Hello(){
+  return <h1>Hello</h1>;
+}
+
+function App() {
+  const [showing, setShowing] = useState(false);
+  const onClick = () => setShowing(prev => !prev);
+  
+  return (
+    <div>
+      {showing ? <Hello /> : null}
+      <button onClick={onClick}>{showing ? "Hide" : "Show"}</button>
+    </div>
+  );
+}
+
+export default App;
+```
+
+button을 클릭함에 따라, Hello 컴포넌트가 render 되었다가, destroy 되었다가 하고 있습니다.
+
+단순히 노출/비노출이 아니라, DOM 상에서 컴포넌트 자체가 생성되었다가 다시 제거되고 있죠.
+
+이때 우리는 destroy 될 때에도 특정 코드를 실행할 수 있습니다.
+
+```javascript
+function Hello(){
+  useEffect(() => {
+    console.log("hi :)");
+    return function(){
+      console.log("bye :(")
+    }
+  },[])
+  return <h1>Hello</h1>;
+}
+```
+
+return을 통해서 컴포넌트가 제거될 때도 우리는 이벤트를 실행할 수 있습니다.
+
+이렇게 useEffect라는 기능을 이용하여, 우리는 우리가 원하는 방식으로 컴포넌틀를 컨트롤 할 수 있게 되었습니다 😆
