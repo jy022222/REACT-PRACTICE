@@ -119,3 +119,66 @@ function Hello(){
 return을 통해서 컴포넌트가 제거될 때도 우리는 이벤트를 실행할 수 있습니다.
 
 이렇게 useEffect라는 기능을 이용하여, 우리는 우리가 원하는 방식으로 컴포넌틀를 컨트롤 할 수 있게 되었습니다 😆
+
+
+💡#7.0 :: To Do List (1) <br>
+✅ 투두리스트 만들기 1
+```javascript
+import { useState } from "react";
+
+function App() {
+  const [toDo, setToDo] = useState("");
+  const [toDos, setToDos] = useState([]);
+  const onChange = (event) => setToDo(event.target.value);
+  const onSubmit = (event) => {
+    event.preventDefault();
+    if(toDo === "") {
+      return;
+    }
+    setToDo("");
+    //input value를 비워줌
+
+    setToDos(currentArray => [toDo, ...currentArray]);
+    //첨 세팅해준 setToDos는 빈 배열이었으므로 처음 currentArray는 [] 빈 배열!
+    //그 다음 사용자가 input에 무언가를 적으면 currentArray엔 그 적어준게 들어갈 것이다
+  }
+
+  return (
+    <div>
+      <form onSubmit={onSubmit}> 
+        <input 
+          onChange={onChange} 
+          value={toDo} 
+          text="Text" 
+          placeholder="Write your do to.." />
+          <button>Add To Do</button>
+      </form>
+    </div>
+  )
+}
+```
+사용자가 input 란에 할 일을 적어주면, 그 일들 즉 리스트들을 배열로 받아와야 합니다.
+
+그러기 위해서 setToDos라는 배열의 모습을 가진 useState를 만들어 주었는데요,
+
+input에 입력된 값을 계속 누적하여 배열 안에 쌓기 위해 ...currentArray 를 이용해 두번째 인자로 넣어주었습니다.
+
+🩵 할 일 갯수 카운팅 해보기
+
+```javascript
+return (
+    <div>
+      <h1>My To Dos ({toDos.length})</h1>
+      //{}안에 갯수를 넣어주었음
+      <form onSubmit={onSubmit}> 
+        <input 
+          onChange={onChange} 
+          value={toDo} 
+          text="Text" 
+          placeholder="Write your do to.." />
+          <button>Add To Do</button>
+      </form>
+    </div>
+  )
+  ```
+  리액트는 즉각적으로 toDos의 개수를 가져와 h1 태그 안에 반영해 줄 수 있습니다.
