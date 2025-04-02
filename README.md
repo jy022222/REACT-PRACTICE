@@ -182,3 +182,48 @@ return (
   )
   ```
   리액트는 즉각적으로 toDos의 개수를 가져와 h1 태그 안에 반영해 줄 수 있습니다.
+
+
+💡#7.1 :: To Do List (2) <br>
+✅ 투두리스트 만들기 2
+
+🩵 map() 함수를 사용하여 ul태그 안에 넣기
+
+```javascript
+return (
+    <div>
+      <h1>My To Dos ({toDos.length})</h1>
+      <form onSubmit={onSubmit}> 
+        <input 
+          onChange={onChange} 
+          value={toDo} 
+          text="Text" 
+          placeholder="Write your do to.." />
+          <button>Add To Do</button>
+      </form>
+      <hr />
+      <ul>
+         {toDos.map((item) => <li>{item}</li>)}
+      </ul>
+    </div>
+  )
+  ```
+toDos 배열을 받아와서 각각의 배열 안에 있는 item들을 li 안으로 뿌려주는 코드입니다.
+
+input 에 입력을 완성할 때마다 li가 생성되고, 그 안에 잘 들어가 있는것을 볼 수 있습니다.
+
+같은 컴포넌트의 리스트를 렌더링 할 때에는 key 라는 prop을 넣어줘야 합니다.
+
+
+```javascript
+ <ul>
+ {toDos.map((item,index) => <li key={index}>{item}</li>)}
+	//key는 고유의 값이어야 함
+</ul>
+```
+
+map 함수는 두번째 인자로 1,2,3, ... 과 같은 index 를 받아올 수 있으므로,
+
+key 값에 index값을 넣어주면 될 것 같습니다!
+
+이렇게하면 콘솔에 오류도 사라지고 정상적인 코드가 됩니다. 😃

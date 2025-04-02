@@ -30,6 +30,11 @@ function App() {
           placeholder="Write your do to.." />
           <button>Add To Do</button>
       </form>
+      <hr />
+      <ul>
+         {toDos.map((item,index) => <li key={index}>{item}</li>)}
+         {/* item은 배열 안에 각각의 요소들을 말함 */}
+      </ul>
     </div>
   )
 }
