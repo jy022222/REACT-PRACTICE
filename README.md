@@ -227,3 +227,72 @@ map 함수는 두번째 인자로 1,2,3, ... 과 같은 index 를 받아올 수 
 key 값에 index값을 넣어주면 될 것 같습니다!
 
 이렇게하면 콘솔에 오류도 사라지고 정상적인 코드가 됩니다. 😃
+
+
+💡#7.2 :: Coin Tracker 만들기 <br>
+🩵 fetch 함수로 코인 api 연동하기
+
+```javascript
+  function App() {
+    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+      fetch("https://api.coinpaprika.com/v1/tickers")
+    }, [])
+    return (
+      <div>
+        <h1>The Coins!</h1>
+        {loading ? <strong>Loading...</strong> : null }
+      </div>
+    );
+  }
+```
+이렇게 하면 우리는 웹에서 Response로 api상에 있는 코인들을 받아올 수 있고,
+이 Response로 부터 json 추출이 가능하다!
+
+```javascript
+  function App() {
+    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+      fetch("https://api.coinpaprika.com/v1/tickers").then(response => response.json().then(json => console.log(json)))
+                                                      //then 메소드를 활용하여 response를 받아옴
+    }, [])
+    return (
+      <div>
+        <h1>The Coins!</h1>
+        {loading ? <strong>Loading...</strong> : null }
+      </div>
+    );
+  }
+```
+array들로 코인들을 받았다면, map함수를 이용해서 UI를 업데이트 할 수 있습니다.
+
+```javascript
+  function App() {
+    const [loading, setLoading] = useState(true);
+    const [coins, setCoins] = useState([])
+    //json데이터(즉 coin)를 state에 넣기 위해 만들어줌
+    
+    useEffect(() => {
+      fetch("https://api.coinpaprika.com/v1/tickers")
+        .then((response) => response.json())
+        .then((json) => {
+          setCoins(json);
+          setLoading(false);
+          //우리가 json 즉, coin 데이터를 받았을 때, setCoins 를 실행시킨다.
+          //coins 얻기를 끝냈다면, loading을 false로 바꿔준다.
+        });
+    }, [])
+    return (
+      <div>
+        <h1>The Coins! ({coins.length})</h1>
+        //coins.length를 이용해 몇개가 출력됐는지 확인 가능
+        {loading ? <strong>Loading...</strong> : null}
+        <ul>
+          {coins.map((coin) => 
+            <li>{coin.name} ({coin.symbol}) : {coin.quotes.USD.price}</li>)
+          }
+        </ul>
+      </div>
+    );
+  }
+```
