@@ -296,3 +296,122 @@ array들로 코인들을 받았다면, map함수를 이용해서 UI를 업데이
     );
   }
 ```
+
+
+
+💡#7.3 :: Movie Part 1 <br>
+✅ 영화 앱 만들기
+✷ API url : https://yts.mx/api/v2/list_movies.json?minimum_rating=9&sort_by=year
+
+(평점9점 이상의 영화들을 연도순으로 정렬하겠다는 파라미터 추가)
+
+해당 API url 주소 복사해두고~
+
+```javascript
+  import { func } from "prop-types";
+  import { useEffect, useState } from "react";
+
+  function App() {
+      const [loading, setLoading] = useState(true);
+      useEffect(() => {
+          fetch(
+              `https://yts.mx/api/v2/list_movies.json?minimum_rating=9&sort_by=year`
+          ).then((response) => response.json()).then(json => console.log(json))
+      }, [])
+      return <div>
+          {loading ? <h3>Loading...</h3> : null}
+      </div>;
+  }
+
+  export default App;
+```
+코인 트래커와 마찬가지로 API url을 fetch해준 후 response로부터 json을 추출해 줍니다.
+
+```javascript
+function App() {
+    const [loading, setLoading] = useState(true);
+    const [movie, setMovies] = useState([]);
+    //movie라는 useState를 하나 만들어준다
+    useEffect(() => {
+        fetch(
+            `https://yts.mx/api/v2/list_movies.json?minimum_rating=9&sort_by=year`
+        ).then((response) => response.json())
+        .then(json => {
+            setMovies(json.data.movies);
+            //useState의 빈 배열 안에 원하는 object 담기
+        });
+    						
+    }, [])
+    return <div>
+        {loading ? <h3>Loading...</h3> : null}
+    </div>;
+}
+```
+data.movie로 영화 리스트들을 쭉 받아온 후 setMovies() 아래에
+
+setLoading(false);
+
+로딩이 된 후 화면에 "Loading..." 메세지를 지울 수 있다!
+
+💡 async-await : 비동기 코드를 동기 코드처럼 순서대로 작성할 수 있게 해주는 도구 (기존의 then 메소드를 대신함)
+
+```javascript
+  function App() {
+      const [loading, setLoading] = useState(true);
+      const [movies, setMovies] = useState([]);
+      const getMovies = async() => {
+      //비동기 함수 선언. async를 붙이면 내부에서 await 사용 가능
+          const json = await (await fetch(
+          //API응답이 올 때까지 await로 기다림
+              `https://yts.mx/api/v2/list_movies.json?minimum_rating=9&sort_by=year`
+          )).json();
+          //그 응답에서 .json()을 또 기다림 >> json에 결과 object가 저장됨
+          setMovies(json.data.movies);
+          setLoading(false);
+      }
+      useEffect(() => {
+          getMovies()
+      }, [])
+      return <div>
+          {loading ? <h3>Loading...</h3> : null}
+      </div>;
+  }
+```
+
+🩵 이제 UI에 영화 리스트들을 노출해보자! 어떻게 ?? map 메소드 이용!!
+
+```javascript
+  function App() {
+      const [loading, setLoading] = useState(true);
+      const [movies, setMovies] = useState([]);
+      const getMovies = async() => {
+          const json = await (await fetch(
+              `https://yts.mx/api/v2/list_movies.json?minimum_rating=9&sort_by=year`
+          )).json();
+          setMovies(json.data.movies);
+          setLoading(false);
+      }
+      useEffect(() => {
+          getMovies()
+      }, [])
+      return <div>
+          {loading ? <h3>Loading...</h3> : <div>
+              {movies.map((movie => (
+              <div key={movie.id}>
+              //key값으로 API에서 고유의 id값을 가져옴
+                <img src={movie.medium_cover_image} />
+                  <h2>{movie.title}</h2>
+                  <p>{movie.summary}</p>
+                  //title(제목)과 summary(요약)등등을 가져온다
+                  <ul>
+                      {movie.genres.map(g => <li key={g}>{g}</li>)}
+                  </ul>
+                  //API에서 genres도 배열이기 때문에 또 map으로 가져옴
+              </div>
+              )))}
+          </div>}
+      </div>;
+  }
+```
+
+이렇게 하면 여러 영화들을 리스트형태로 UI에 노출시킬 수 있음 🥳
