@@ -1,6 +1,7 @@
 //#7.1까지
-import { func } from "prop-types";
-import { useEffect, useState } from "react";
+// import { func } from "prop-types";
+// import { useEffect, useState } from "react";
+// import Movie from "./components/Movie";
 
 // function App() {
 //   const [toDo, setToDo] = useState("");
@@ -44,25 +45,29 @@ import { useEffect, useState } from "react";
 
 
 //#7.2 (Coin Tracker) 부터
-function App() {
-  const [loading, setLoading] = useState(true);
-  const [coins, setCoins] = useState([])
-  useEffect(() => {
-    fetch("https://api.coinpaprika.com/v1/tickers")
-      .then((response) => response.json())
-      .then((json) => {
-        setCoins(json);
-        setLoading(false);
-      });
-  }, [])
-  return ( 
-    <div>
-      <h1>The Coins! ({coins.length})</h1>
-      {loading ? <strong>Loading...</strong> : <ul>
-        {coins.map((coin) => <li>{coin.name} ({coin.symbol}) : {coin.quotes.USD.price}</li>)}
-      </ul>}
-    </div>
-  );
-}
+// function App() {
+//   const [loading, setLoading] = useState(true);
+//   const [coins, setCoins] = useState([])
+//   useEffect(() => {
+//     fetch("https://api.coinpaprika.com/v1/tickers")
+//       .then((response) => response.json())
+//       .then((json) => {
+//         setCoins(json);
+//         setLoading(false);
+//       });
+//   }, [])
+//   return ( 
+//     <div>
+//       <h1>The Coins! ({coins.length})</h1>
+//       {loading ? <strong>Loading...</strong> : <ul>
+//         {coins.map((coin) => <li>{coin.name} ({coin.symbol}) : {coin.quotes.USD.price}</li>)}
+//       </ul>}
+//     </div>
+//   );
+// }
 
+// #7.3 Movie App 1-2
+function App() {
+  return <Movie />;
+}
 export default App;
