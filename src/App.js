@@ -1,7 +1,7 @@
 //#7.1까지
 // import { func } from "prop-types";
-// import { useEffect, useState } from "react";
-// import Movie from "./components/Movie";
+import { useEffect, useState } from "react";
+import Movie from "./components/Movie";
 
 // function App() {
 //   const [toDo, setToDo] = useState("");
@@ -68,6 +68,6 @@
 
 // #7.3 Movie App 1-2
 function App() {
-  return <Movie />;
+  return null;
 }
 export default App;

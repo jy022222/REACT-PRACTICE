@@ -1,4 +1,4 @@
-import propTypes from "prop-types";
+import PropTypes from "prop-types";
 
 function Movie({coverImg, title, summary, genres}) {
             //Movie 컴포넌트가 이 정보들을 부모 컴포넌트로부터 받아온다
@@ -13,10 +13,10 @@ function Movie({coverImg, title, summary, genres}) {
 }
 
 Movie.propTypes = {
-    coverImg: propTypes.string.isRequired,
-    title: propTypes.string.isRequired,
-    summary: propTypes.string.isRequired,
-    genres: propTypes.arrayOf(propTypes.string).isRequired,
+    coverImg: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    summary: PropTypes.string.isRequired,
+    genres: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 export default Movie;
