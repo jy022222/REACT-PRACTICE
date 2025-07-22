@@ -415,3 +415,232 @@ setLoading(false);
 ```
 
 이렇게 하면 여러 영화들을 리스트형태로 UI에 노출시킬 수 있음 🥳
+
+
+
+💡#7.3 ~ #7.5 :: Router <br>
+🩵 컴포넌트 만들기
+
+src 폴더 하위에 Movie.js 라는 파일을 만들어 줍니다.
+
+```javascript
+//App.js
+import Movie from "./Movie";
+
+<div>
+  {loading ? (
+    <h1>Loading...</h1>
+  ) : (
+    <div>
+      {movies.map((movie) => <Movie 
+      key={movie.id}
+      coverImg={movie.medium_cover_image} 
+      title={movie.title} 
+      summary={movie.summary} 
+      genres={movie.genres}/>)}
+    </div>
+  )}
+</div>
+```
+
+App.js 에서 Movie 컴포넌트를 임포트 해주고, 렌더링 코드를 해당 코드와 같이 바꿔줍니다.
+
+컴포넌트를 보내줄 때, 컴포넌트 명(props)은 마음대로 정해도 되지만 !! (ex. coverImg)
+
+뒤에 데이터 부분은 API의 이름과 같아야 합니다.
+
+```javascript
+//Movie.js
+function Movie({coverImg, title, summary, genres}) {
+            //Movie 컴포넌트가 이 정보들을 부모 컴포넌트로부터 받아온다
+    return <div>
+        <img src={coverImg} alt={title} />
+        <h2>{title}</h2>
+        <p>{summary}</p>
+        <ul>
+            {genres.map(g => <li key={g}>{g}</li>)}
+        </ul>
+    </div>
+}
+
+export default Movie;
+```
+
+movie API에서 정보들을 가져와 props으로써 우리의 Movie 컴포넌트로 넘겨서
+
+해당 컴포넌트가 이것들을 받아서 사용하게 만들어주는 것입니다.
+
+🩵 Prop Type 체크하기
+
+```javascript
+import PropTypes from "prop-types";
+
+function Movie({coverImg, title, summary, genres}) {
+            //Movie 컴포넌트가 이 정보들을 부모 컴포넌트로부터 받아온다
+    return <div>
+        <img src={coverImg} alt={title} />
+        <h2>{title}</h2>
+        <p>{summary}</p>
+        <ul>
+            {genres.map(g => <li key={g}>{g}</li>)}
+        </ul>
+    </div>
+}
+
+Movie.propTypes = {
+    coverImg: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    summary: PropTypes.string.isRequired,
+    genres: PropTypes.arrayOf(PropTypes.string).isRequired,
+};
+
+export default Movie;
+```
+
+해당 코드로 Prop Type들을 체크합니다.
+
+💡React Router : 페이지 전환을 구현할 수 있게 해주는 라이브러리
+
+🩵 페이지 전환하기
+
+1. 먼저 터미널에서 'npm install react-router-dom' 을 설치해줍니다.
+
+2. src 안에 [routes] 폴더와 [components] 폴더를 각각 생성해준 후
+
+[components] 폴더 안에 Movie.js를 넣어주고, [routes] 폴더 안에 Home.js와 Detail.js를 생성해줍니다.
+
+```javascript
+//App.js
+
+import { useEffect, useState } from "react";
+import Movie from "./components/Movie";
+                  //경로 수정
+```
+
+App.js에서 Movie 컴포넌트 임포트해주는 코드도 경로를 수정해줘야 합니다.
+
+ 
+3. Home.js에 기본적으로 우리의 App component 전체를 가지고 있게 될 것이므로
+
+App.js와 Home.js를 각각 다음과 같이 수정 및 작성해줍니다.
+
+```javascript
+//App.js
+import { useEffect, useState } from "react";
+import Movie from "./components/Movie";
+
+function App() {
+  return null;
+}
+export default App;
+
+//Home.js
+
+function Home(){
+  const [loading, setLoading] = useState(true);
+  const [movies, setMovies] = useState([]);
+  const getMovies = async() => {
+      const json = await (await fetch(
+          `https://yts.mx/api/v2/list_movies.json?minimum_rating=9&sort_by=year`
+      )).json();
+      setMovies(json.data.movies);
+      setLoading(false);
+  };
+  useEffect(() => {
+      getMovies();
+  }, []);
+  return (
+    <div>
+      {loading ? (
+        <h1>Loading...</h1>
+      ) : (
+        <div>
+          {movies.map((movie) =>(
+            <Movie 
+            key={movie.id}
+            coverImg={movie.medium_cover_image} 
+            title={movie.title} 
+            summary={movie.summary} 
+            genres={movie.genres} 
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+export default Home;
+```
+4. [routes] 폴더에 Detail.js 컴포넌트를 추가해줍니다.
+
+✓ 이제부터 App.js 는 router를 렌더링하는 역할을 하게 될 것입니다.
+
+router는 URL을 보고있는 컴포넌트이고, 사용자가 기본 URL로 접속했을 시, router는 우리에게
+
+Home 컴포넌트를 보여주게 됩니다.
+
+🩵 React Router 사용하기
+
+```javascript
+//App.js
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Switch } from "react-router-dom/cjs/react-router-dom.min";
+
+//컴포넌트 임포트
+import Home from "./routes/Home";
+import Detail from "./routes/Detail"
+
+function App() {
+return <Router>
+ <Switch>
+  <Route path="/movie">
+   <Detail />
+  </Route>
+  <Route path="/"> // "/"은 홈 경로임
+   <Home />
+    //홈 경로니까 Home 컴포넌트 넣어줌
+  </Route>
+</Switch>
+}
+export default App;
+```
+
+Switch는 Route를 찾는 역할을 하는데, Route는 URL을 의미합니다.
+
+그리고 Route를 찾으면 컴포넌트를 렌더링합니다.
+
+Route path="/movie" 라는 것은 url 상에서 '/movie' 가 뒤에 붙는다는 의미예요.
+이때 나는 Detail 컴포넌트를 UI로 보여주겠다! 이런 의미가 담긴 코드입니다.
+
+🩵 한 Route에서 다른 Route로 넘어가기
+
+a태그를 사용해서도 화면 이동을 할 순 있겠지만, 그럴 경우 페이지 전체가 리로드됩니다.
+
+하지만 우린 React.js를 사용하고 있고, 리로드하는 것을 피하고 싶습니다.
+
+Link 컴포넌트를 통해 브라우저 새로고침 없이도 유저를 다른 페이지로 이동시켜줄 수 있습니다.
+
+```javascript
+//Movie.js
+
+import {Link} from "react-router-dom";
+//Link 임포트
+
+function Movie({coverImg, title, summary, genres}) {
+    return <div>
+        <img src={coverImg} alt={title} />
+        <h2>
+            <Link to="/movie">{title}</Link>
+            //Link 컴포넌트로 이동되고 싶은 경로 넣어주기
+        </h2>
+        <p>{summary}</p>
+        <ul>
+            {genres.map(g => <li key={g}>{g}</li>)}
+        </ul>
+    </div>
+}
+```
+
+그 결과, h2태그 title에 링크가 생성되엇고,클릭 시 새로고침 없이 movie 경로, 즉 Detail 컴포넌트로 이동되는 것을
+확인할 수 있습니다!!

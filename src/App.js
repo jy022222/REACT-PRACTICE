@@ -1,7 +1,7 @@
 //#7.1까지
 // import { func } from "prop-types";
-import { useEffect, useState } from "react";
-import Movie from "./components/Movie";
+// import { useEffect, useState } from "react";
+// import Movie from "./components/Movie";
 
 // function App() {
 //   const [toDo, setToDo] = useState("");
@@ -66,8 +66,28 @@ import Movie from "./components/Movie";
 //   );
 // }
 
-// #7.3 Movie App 1-2
+// #7.3 Movie App 1-2 ~ #7.5 React Router
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Home from "./routes/Home";
+import Detail from "./routes/Detail"
+import { Switch } from "react-router-dom/cjs/react-router-dom.min";
+
 function App() {
-  return null;
+  return <Router>
+    <Switch>
+      <Route path="/movie">
+        <Detail />
+      </Route>
+      <Route path="/">
+        <Home />
+      </Route>
+    </Switch>
+    
+  </Router>
+  // return <Router>
+  //   <Routes>
+  //     <Route path="/" element={<Home />} />
+  //   </Routes>
+  // </Router>;
 }
 export default App;
