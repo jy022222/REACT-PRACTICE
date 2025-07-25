@@ -75,14 +75,14 @@ import { Switch } from "react-router-dom/cjs/react-router-dom.min";
 function App() {
   return <Router>
     <Switch>
-      <Route path="/movie">
+      <Route path="/movie/:id">
+          {/* /:id 이런식으로 넣어줌 */}
         <Detail />
       </Route>
       <Route path="/">
         <Home />
       </Route>
     </Switch>
-    
   </Router>
   // return <Router>
   //   <Routes>

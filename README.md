@@ -644,3 +644,174 @@ function Movie({coverImg, title, summary, genres}) {
 
 그 결과, h2태그 title에 링크가 생성되엇고,클릭 시 새로고침 없이 movie 경로, 즉 Detail 컴포넌트로 이동되는 것을
 확인할 수 있습니다!!
+
+
+
+
+💡#7.6 :: Parameters <br>
+React Router는 동적 url을 지원합니다. 즉, url에 변수를 넣을 수 있다는 의미입니다.
+
+```javascript
+//App.js
+
+function App() {
+  return <Router>
+    <Switch>
+      <Route path="/movie/:id">
+      {/* /:id 이런식으로 넣어줌 */}
+        <Detail />
+      </Route>
+      <Route path="/">
+        <Home />
+      </Route>
+    </Switch>
+  </Router>
+}
+```
+
+그리고 Movie 컴포넌트에 id가 필요하게 됩니다.
+
+```javascript
+//Home.js
+
+function Home(){
+  const [loading, setLoading] = useState(true);
+  const [movies, setMovies] = useState([]);
+  const getMovies = async() => {
+      const json = await (await fetch(
+          `https://yts.mx/api/v2/list_movies.json?minimum_rating=9&sort_by=year`
+      )).json();
+      setMovies(json.data.movies);
+      setLoading(false);
+  };
+  useEffect(() => {
+      getMovies();
+  }, []);
+  return (
+    <div>
+      {loading ? (
+        <h1>Loading...</h1>
+      ) : (
+        <div>
+          {movies.map((movie) =>(
+            <Movie 
+            key={movie.id}
+            id={movie.id}
+            {* prop으로 id를 추가 *}
+            coverImg={movie.medium_cover_image} 
+            title={movie.title} 
+            summary={movie.summary} 
+            genres={movie.genres} 
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+//Moive.js
+function Movie({id, coverImg, title, summary, genres}) {
+{* Home으로부터 넘겨받은 id 추가 *}
+    return <div>
+        <img src={coverImg} alt={title} />
+        <h2>
+            <Link to="/movie">{title}</Link>
+        </h2>
+        <p>{summary}</p>
+        <ul>
+            {genres.map(g => <li key={g}>{g}</li>)}
+        </ul>
+    </div>
+}
+```
+
+Movie 컴포넌트의 부모인 Home.js에서 Movie에 prop으로 id를 추가해준 후,
+
+Movie.js에서 object로 받아줍니다.
+
+```javascript
+//Movie.js
+
+function Movie({id, coverImg, title, summary, genres}) {
+    return <div>
+        <img src={coverImg} alt={title} />
+        <h2>
+            <Link to={`/movie/${id}`}>{title}</Link>
+            {* url 다른 방식으로 넣어주기 *}
+        </h2>
+        <p>{summary}</p>
+        <ul>
+            {genres.map(g => <li key={g}>{g}</li>)}
+        </ul>
+    </div>
+}
+```
+
+컴포넌트를 렌더링한다는 건 실질적으로 함수를 불러오는 것을 뜻합니다.
+
+함수를 호출해서 object들을 넘겨주는 것이죠.
+
+props는 object일 뿐이고, 우리는 그걸 열어서 item을 꺼내 쓰는 것입니다.
+
+결국 우리는 url을 위의 코드와 같은 방식으로 만들어줄 수 있습니다. 
+
+그 결과, Detail 컴포넌트로 이동했을 때 url에 각 영화의 id가 붙는것을 확인할 수 있습니다.
+
+💡 useParams : React Router에서 제공하는 url경로에 포함된 동적 파라미터 값을 가져오는 훅(Hook)
+
+```javascript
+//Detail.js
+
+import {useParams} from "react-router-dom"
+//useParams 임포트
+
+function Detail(){
+    const x = useParams()
+    console.log(x)
+    return <h1>Detail</h1>
+}
+```
+
+해당 코드의 결과, url에 있는 값과 같은 id값이 콘솔에도 찍히는 것을 확인할 수 있습니다.
+
+즉, 위의 App.js에서
+
+```javascript
+<Route path="/movie/:id">
+	{/* /:id 이런식으로 넣어줌 */}
+	<Detail />
+</Route>
+```
+ 
+이렇게 movie 뒤에 우리는 React Router에 이 url이 변수를 받을거라고 말해준 후 ('id' 라는 이름으로)
+
+Detail에서 useParams라는 함수를 사용하는 것입니다.
+
+이 함수를 사용하면 React Router는 바로 이 변수의 값을 넘겨줍니다.
+
+🩵 API로부터 정보 fetch 해오기
+
+```javascript
+//Detail.js
+
+import { useEffect } from "react";
+import {useParams} from "react-router-dom"
+
+function Detail(){
+    const {id} = useParams();
+    const getMovie = async () => {
+        const json = await (
+            await fetch(`https://yts.mx/api/v2/movie_details.json?movie_id=${id}`)
+        ).json();
+    }
+    useEffect(() => {
+       getMovie();
+    }, [])
+    return <h1>Detail</h1>
+}
+
+export default Detail;
+```
+
+이제 , 영화 APP 만들기를 위한 큰 틀의 코딩은 완성 😍
