@@ -79,7 +79,7 @@ function App() {
           {/* /:id 이런식으로 넣어줌 */}
         <Detail />
       </Route>
-      <Route path="/">
+      <Route basename={process.env.PUBLIC_URL}>
         <Home />
       </Route>
     </Switch>
