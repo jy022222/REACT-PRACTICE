@@ -815,3 +815,39 @@ export default Detail;
 ```
 
 이제 , 영화 APP 만들기를 위한 큰 틀의 코딩은 완성 😍
+
+
+
+💡#7.7 :: Publishing <br>
+먼저 터미널에 "npm i gh-pages" 를 입력하여 gh-pages를 설치해줍니다
+
+gh-pages는 github에서 제공하는 무료 서비스로, 코드 소스를 올리면 그걸 웹사이트로 만들어서 무료로 배포가 가능합니다. + 도메인은 덤 🤪
+
+그 후 package.json으로 가서 build라는 스크립트가 추가되었는지 확인해준 후,
+
+터미널에서 "npm run build"를 입력하여 파일을 최적화 해줍니다.
+
+그러면 build라는 폴더가 생길거고 그 안에 압축된 요상하게 생긴(?) 코드가 있을 것입니다.
+
+그리고 다시 package.json으로 가서 맨 하단에 
+
+```json
+"homepage": "https://jy022222.github.io/react-practice"
+//깃헙 유저네임, 리포지토리 이름 순
+```
+
+상단과 같이 입력해줍니다.
+
+다음으로는 "scripts"인 객체를 찾아서 하단에 
+
+```json
+ "deploy": "gh-pages -d build",
+ "predeploy": "npm run build"
+```
+
+위와같이 추가해주는데, deploy가 하는 일은 우리가 방금 설치한 gh-pages를 실행시키고 build라는 디렉토리를 가져가는 것입니다.
+
+
+그 후 터미널에 "npm run deploy" 명령어를 입력해주고 5-10분 뒤에 
+
+https://jy022222.github.io/react-practice 해당 url에서 배포가 된것을 확인하면 최종 완료 !! 🎉🎉🎉
